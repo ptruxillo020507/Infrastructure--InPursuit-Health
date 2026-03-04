@@ -138,7 +138,6 @@
           <div class="iph-dropdown-menu">
             <a href="tetra-ex.html">TETRA <em>ex</em>™</a>
             <a href="tetra-aegis.html">TETRA Aegis™</a>
-            <a href="tetra-sentinel.html" style="padding-left:28px;">↳ TETRA Sentinel™</a>
           </div>
         </div>
 
@@ -153,13 +152,12 @@
         <div class="iph-dropdown">
           <a href="for-providers.html" class="iph-nav-item iph-dropdown-toggle">For VBC Providers <span class="iph-caret">▼</span></a>
           <div class="iph-dropdown-menu">
-            <a href="access.html">CMS ACCESS Model Offer</a>
+            <a href="access.html">CMS ACCESS — Apply Now</a>
           </div>
         </div>
 
-        <a href="mypursuit.html" class="iph-nav-item">MyPursuit™</a>
         <a href="data-oath.html" class="iph-nav-item">Data Oath</a>
-        <a href="partner-network.html" class="iph-nav-item">Partner Network</a>
+        <a href="veterans.html" class="iph-nav-item">Veterans First</a>
         <a id="iph-cta" href="investors.html">Invest</a>
 
       </nav>
@@ -195,5 +193,94 @@
   document.querySelectorAll('.iph-nav-item,.iph-dropdown-menu a').forEach(function(a){
     if(a.getAttribute('href')===page) a.style.color='var(--gold)';
   });
+
+  // ── UNIVERSAL FOOTER ──
+  var fcss = `
+    #iph-footer {
+      background: #060E1A;
+      border-top: 1px solid rgba(197,164,78,0.12);
+      padding: 56px 40px 32px;
+      font-family: 'Instrument Sans','DM Sans',sans-serif;
+    }
+    #iph-footer-inner { max-width:1200px; margin:0 auto; }
+    #iph-footer-top {
+      display:flex; justify-content:space-between; align-items:flex-start;
+      flex-wrap:wrap; gap:48px;
+      padding-bottom:40px; border-bottom:1px solid rgba(197,164,78,0.08);
+    }
+    #iph-footer-brand-col .iph-footer-wordmark {
+      font-family:'Instrument Serif',Georgia,serif; font-size:20px;
+      color:#C5A44E; letter-spacing:1px; display:block;
+      margin-bottom:8px; text-decoration:none;
+    }
+    #iph-footer-brand-col .iph-footer-tagline {
+      font-size:10px; letter-spacing:2px; text-transform:uppercase;
+      color:rgba(255,255,255,0.25);
+    }
+    #iph-footer-brand-col .iph-footer-contact {
+      display:block; margin-top:16px; font-size:11px; letter-spacing:0.5px;
+      color:rgba(197,164,78,0.55); text-decoration:none; transition:color 0.3s;
+    }
+    #iph-footer-brand-col .iph-footer-contact:hover { color:#C5A44E; }
+    .iph-footer-col-label {
+      font-size:9px; font-weight:700; letter-spacing:2px; text-transform:uppercase;
+      color:rgba(197,164,78,0.45); margin-bottom:16px;
+    }
+    .iph-footer-links { display:flex; flex-direction:column; gap:10px; }
+    .iph-footer-links a {
+      font-size:11px; letter-spacing:1px; text-transform:uppercase;
+      color:rgba(255,255,255,0.35); text-decoration:none; transition:color 0.3s;
+    }
+    .iph-footer-links a:hover { color:#C5A44E; }
+    #iph-footer-bottom {
+      display:flex; justify-content:space-between; align-items:center;
+      flex-wrap:wrap; gap:12px; padding-top:28px;
+    }
+    #iph-footer-legal { font-size:10px; color:rgba(255,255,255,0.2); letter-spacing:0.5px; line-height:1.6; }
+    #iph-footer-marks { font-size:10px; color:rgba(255,255,255,0.15); letter-spacing:0.5px; }
+    @media(max-width:768px){ #iph-footer{padding:40px 20px 24px;} #iph-footer-top{gap:32px;} }
+  `;
+  var fs = document.createElement('style');
+  fs.textContent = fcss;
+  document.head.appendChild(fs);
+
+  var fhtml = `
+    <div id="iph-footer-inner">
+      <div id="iph-footer-top">
+        <div id="iph-footer-brand-col">
+          <a class="iph-footer-wordmark" href="index.html">InPursuit Health</a>
+          <span class="iph-footer-tagline">Harness the Power of Your Data\u2122</span>
+          <a class="iph-footer-contact" href="mailto:info@inpursuithealth.com">info@inpursuithealth.com</a>
+        </div>
+        <div>
+          <div class="iph-footer-col-label">Policy</div>
+          <div class="iph-footer-links">
+            <a href="terms.html">Terms of Service</a>
+            <a href="security.html">Security Center</a>
+          </div>
+        </div>
+        <div>
+          <div class="iph-footer-col-label">Company</div>
+          <div class="iph-footer-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About Us</a>
+            <a href="leadership.html">Leadership</a>
+            <a href="careers.html">Careers</a>
+            <a href="mailto:info@inpursuithealth.com">Contact</a>
+          </div>
+        </div>
+      </div>
+      <div id="iph-footer-bottom">
+        <div id="iph-footer-legal">&copy; 2026 InPursuit Health, LLC &mdash; Wyoming Limited Liability Company. All rights reserved. Patent pending.</div>
+        <div id="iph-footer-marks">Results Matter\u2122 &nbsp;|&nbsp; Harness the Power of Your Data\u2122</div>
+      </div>
+    </div>
+  `;
+
+  document.querySelectorAll('footer').forEach(function(el){ el.remove(); });
+  var footer = document.createElement('footer');
+  footer.id = 'iph-footer';
+  footer.innerHTML = fhtml;
+  document.body.appendChild(footer);
 
 })();
