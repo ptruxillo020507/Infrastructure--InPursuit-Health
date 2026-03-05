@@ -1,286 +1,487 @@
 /**
- * InPursuit Health — Universal Navigation
- * Drop <script src="nav.js"></script> into any page.
- * Edit ONLY this file to update nav sitewide.
+ * nav.js — InPursuit Health Universal Navigation
+ * Drop this file in your site root and add:
+ *   <script src="nav.js"></script>  before </body>
  */
+
 (function () {
 
-  var css = `
-    :root { --navy-deep:#060E1A; --gold:#C5A44E; --gold-bright:#E8D48B; }
-    #iph-topbar {
-      background:var(--navy-deep);
-      border-bottom:1px solid rgba(197,164,78,0.2);
-      position:fixed;top:0;left:0;right:0;z-index:9999;
-      transition:box-shadow 0.3s ease;
-      font-family:'Instrument Sans','DM Sans',sans-serif;
+  /* ── NAV DATA ─────────────────────────────────────────────────── */
+  var NAV = [
+    {
+      label: 'TETRA',
+      href:  'tetra.html',
+      children: [
+        {
+          label: 'TETRA Ex\u2122',
+          href:  'tetra-ex.html',
+          desc:  'Enterprise data exchange &amp; interoperability infrastructure'
+        },
+        {
+          label: 'TETRA Conductor\u2122',
+          href:  'tetra-conductor.html',
+          desc:  'Model-agnostic AI orchestration layer for healthcare'
+        },
+        {
+          label: 'TETRA Aegis\u2122',
+          href:  'tetra-aegis.html',
+          desc:  'AI governance &amp; supervisory control architecture',
+          children: [
+            {
+              label: 'TETRA Sentinel\u2122',
+              href:  'tetra-sentinel.html',
+              desc:  'Real-time AI supervision &amp; threat interception agent'
+            }
+          ]
+        }
+      ]
+    },
+    {
+      label: 'For Providers',
+      href:  'for-providers.html',
+      children: [
+        { label: 'CMS ACCESS Model',    href: 'access.html',          desc: 'Apply by April\u00a01, 2026\u00a0\u2014 Cohort\u00a01' },
+        { label: 'Value-Based Care',    href: 'value-based-care.html',desc: 'Revenue transition without the risk' },
+        { label: 'Provider Onboarding', href: 'onboarding.html',      desc: 'Start in under 30 minutes' }
+      ]
+    },
+    {
+      label: 'For Payers',
+      href:  'for-payers.html',
+      children: [
+        { label: 'CMS ACCESS Model Offer', href: 'payers-access.html',  desc: 'Value-based care infrastructure for payer networks' },
+        { label: 'MSSP',                   href: 'mssp.html',            desc: 'Medicare Shared Savings Program participation' },
+        { label: 'LEAD',                   href: 'lead.html',            desc: 'Lung Cancer Early Detection program support' },
+        { label: 'TEAM',                   href: 'team.html',            desc: 'Transforming Episode Accountability Model' }
+      ]
+    },
+    {
+      label: 'For Patients',
+      href:  'for-patients.html',
+      children: [
+        { label: 'InPursuit App',   href: 'app.html',            desc: 'Your unified health record' },
+        { label: 'MAHA Initiative', href: 'maha.html',           desc: 'Making America Healthy Again' },
+        { label: 'Veterans First',  href: 'veterans-first.html', desc: 'Bridging DoD \u2192 VA care gaps' }
+      ]
+    },
+    {
+      label: 'About',
+      href:  '#',
+      children: [
+        { label: 'Leadership',  href: 'leadership.html', desc: 'The team behind InPursuit' },
+        { label: 'Our Mission', href: 'about.html',      desc: 'Why we exist' },
+        { label: 'Contact',     href: 'contact.html',    desc: 'Get in touch' }
+      ]
     }
-    #iph-topbar.scrolled{box-shadow:0 4px 30px rgba(0,0,0,0.5);}
-    #iph-topbar-inner{
-      max-width:1400px;margin:0 auto;padding:0 40px;
-      display:flex;justify-content:space-between;align-items:center;height:64px;
-    }
-    #iph-brand-group{display:flex;align-items:center;gap:10px;}
-    #iph-wordmark{
-      font-family:'Instrument Serif',Georgia,serif;
-      font-size:22px;color:var(--gold);letter-spacing:1px;
-      line-height:1;white-space:nowrap;
-      text-decoration:none;transition:opacity 0.3s;
-    }
-    #iph-wordmark:hover{opacity:0.8;}
-    #iph-brand-divider{color:rgba(255,255,255,0.2);font-size:14px;}
-    #iph-maha{
-      font-size:11px;font-weight:500;letter-spacing:0.5px;
-      color:rgba(255,255,255,0.45);
-      white-space:nowrap;text-decoration:none;transition:color 0.3s;
-    }
-    #iph-maha:hover{color:rgba(255,255,255,0.7);}
-    #iph-nav{display:flex;align-items:center;gap:4px;}
-    .iph-nav-item{
-      padding:20px 14px;font-size:11px;font-weight:500;
-      letter-spacing:1.5px;text-transform:uppercase;
-      color:rgba(255,255,255,0.6);text-decoration:none;
-      position:relative;transition:color 0.3s;white-space:nowrap;
-      background:none;border:none;cursor:pointer;font-family:inherit;
-    }
-    .iph-nav-item:hover{color:var(--gold);}
-    .iph-nav-item::after{
-      content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);
-      width:0;height:2px;background:var(--gold);transition:width 0.3s;
-    }
-    .iph-nav-item:hover::after{width:60%;}
-    .iph-dropdown{position:relative;display:inline-flex;align-items:center;}
-    .iph-dropdown-toggle{display:inline-flex;align-items:center;gap:5px;}
-    .iph-dropdown-toggle .iph-caret{
-      font-size:8px;opacity:0.5;
-      transition:transform 0.25s,opacity 0.25s;display:inline-block;
-    }
-    .iph-dropdown:hover .iph-caret,.iph-dropdown.open .iph-caret{transform:rotate(180deg);opacity:1;}
-    .iph-dropdown-menu{
-      display:none;position:absolute;top:calc(100% - 2px);left:0;
-      background:#0B1628;border:1px solid rgba(197,164,78,0.15);
-      border-radius:0 0 8px 8px;box-shadow:0 20px 60px rgba(0,0,0,0.5);
-      min-width:260px;z-index:10000;overflow:hidden;
-    }
-    .iph-dropdown:hover .iph-dropdown-menu,.iph-dropdown.open .iph-dropdown-menu{display:block;}
-    .iph-dropdown-menu a{
-      display:block;padding:13px 20px;
-      font-size:11px;font-weight:500;letter-spacing:1px;
-      text-transform:uppercase;color:rgba(255,255,255,0.5);
-      text-decoration:none;border-bottom:1px solid rgba(197,164,78,0.06);
-      transition:all 0.2s;white-space:nowrap;
-    }
-    .iph-dropdown-menu a:last-child{border-bottom:none;}
-    .iph-dropdown-menu a:hover{color:var(--gold);background:rgba(197,164,78,0.05);padding-left:26px;}
-    .iph-sub-label{
-      display:block;padding:10px 20px 6px;
-      font-size:9px;letter-spacing:2px;font-weight:700;
-      text-transform:uppercase;color:rgba(197,164,78,0.35);
-      border-bottom:1px solid rgba(197,164,78,0.06);pointer-events:none;
-    }
-    #iph-cta{
-      display:inline-flex;align-items:center;margin-left:8px;padding:8px 18px;
-      background:var(--gold);color:var(--navy-deep);font-size:10px;font-weight:700;
-      letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;
-      border-radius:4px;transition:all 0.3s;white-space:nowrap;
-    }
-    #iph-cta:hover{background:var(--gold-bright);transform:translateY(-1px);}
-    #iph-toggle{
-      display:none;background:none;border:none;
-      width:32px;height:32px;cursor:pointer;position:relative;flex-shrink:0;
-    }
-    #iph-toggle span{
-      display:block;width:22px;height:2px;background:var(--gold);
-      position:absolute;left:5px;transition:all 0.3s;
-    }
-    #iph-toggle span:nth-child(1){top:8px;}
-    #iph-toggle span:nth-child(2){top:15px;}
-    #iph-toggle span:nth-child(3){top:22px;}
-    body{padding-top:64px!important;}
-    @media(max-width:1000px){
-      #iph-topbar-inner{padding:0 20px;}
-      #iph-nav{display:none;}
-      #iph-toggle{display:block;}
-      #iph-nav.open{
-        display:flex;flex-direction:column;align-items:flex-start;
-        position:absolute;top:64px;left:0;right:0;
-        background:var(--navy-deep);
-        border-bottom:1px solid rgba(197,164,78,0.2);
-        padding:12px 0;max-height:calc(100vh - 64px);overflow-y:auto;
+  ];
+
+  var CTA = { label: 'Get Started', href: 'access.html' };
+
+  /* ── CSS ──────────────────────────────────────────────────────── */
+  var CSS = [
+    ':root{',
+    '  --iph-bg:rgba(8,17,34,0.96);',
+    '  --iph-border:rgba(197,164,78,0.12);',
+    '  --iph-gold:#C5A44E;',
+    '  --iph-white:#eef0f4;',
+    '  --iph-muted:rgba(238,240,244,0.45);',
+    '  --iph-hover:rgba(197,164,78,0.07);',
+    '  --iph-h:64px;',
+    '  --iph-drop:#0d1c33;',
+    '  --iph-sub:#091525;',
+    '  --iph-sep:rgba(197,164,78,0.1);',
+    '}',
+
+    /* body offset */
+    'body{padding-top:var(--iph-h);}',
+
+    /* ── header bar ── */
+    '#iph-header{',
+    '  position:fixed;top:0;left:0;right:0;z-index:9999;',
+    '  height:var(--iph-h);',
+    '  display:flex;align-items:center;padding:0 32px;gap:0;',
+    '  background:var(--iph-bg);',
+    '  border-bottom:1px solid var(--iph-border);',
+    '  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);',
+    '}',
+
+    /* ── logo ── */
+    '#iph-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;margin-right:36px;}',
+    '#iph-logo svg{width:28px;height:28px;flex-shrink:0;}',
+    '.iph-lw{display:flex;flex-direction:column;line-height:1;}',
+    '.iph-lw-main{font-family:"Instrument Serif",Georgia,serif;font-size:17px;color:var(--iph-white);letter-spacing:-0.02em;}',
+    '.iph-lw-sub{font-family:"Instrument Sans",Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--iph-gold);margin-top:2px;}',
+
+    /* ── top-level nav ── */
+    '#iph-nav{display:flex;align-items:center;flex:1;list-style:none;margin:0;padding:0;}',
+    '.iph-ni{position:relative;list-style:none;}',
+    '.iph-ni>a{display:flex;align-items:center;gap:5px;padding:0 14px;height:var(--iph-h);',
+    '  font-family:"Instrument Sans",Arial,sans-serif;font-size:12px;font-weight:700;',
+    '  letter-spacing:0.1em;text-transform:uppercase;',
+    '  color:var(--iph-muted);text-decoration:none;transition:color 0.2s;white-space:nowrap;',
+    '  position:relative;}',
+    '.iph-ni>a:hover,.iph-ni.iph-open>a{color:var(--iph-white);}',
+    '.iph-ni>a::after{content:"";position:absolute;bottom:0;left:14px;right:14px;height:2px;',
+    '  background:var(--iph-gold);transform:scaleX(0);transition:transform 0.2s;}',
+    '.iph-ni>a:hover::after,.iph-ni.iph-open>a::after{transform:scaleX(1);}',
+
+    /* chevron */
+    '.iph-chev{width:10px;height:10px;flex-shrink:0;opacity:0.4;transition:transform 0.2s,opacity 0.2s;display:inline-block;vertical-align:middle;}',
+    '.iph-ni.iph-open>a .iph-chev,.iph-drop-item.iph-open>a .iph-chev{transform:rotate(180deg);opacity:0.85;}',
+
+    /* ── dropdown ── */
+    '.iph-drop{display:none;position:absolute;top:calc(var(--iph-h) + 1px);left:0;min-width:280px;',
+    '  background:var(--iph-drop);border:1px solid var(--iph-sep);border-radius:12px;padding:8px;',
+    '  box-shadow:0 24px 60px rgba(0,0,0,0.5),0 0 0 1px rgba(197,164,78,0.04);z-index:9998;',
+    '  list-style:none;margin:0;}',
+    '.iph-ni.iph-open>.iph-drop{display:block;}',
+
+    /* drop items */
+    '.iph-drop-item{position:relative;list-style:none;}',
+    '.iph-drop-item>a{display:flex;flex-direction:column;padding:11px 14px;border-radius:8px;text-decoration:none;transition:background 0.15s;}',
+    '.iph-drop-item>a:hover,.iph-drop-item.iph-open>a{background:var(--iph-hover);}',
+    '.di-label{font-family:"Instrument Sans",Arial,sans-serif;font-size:13px;font-weight:700;color:var(--iph-white);display:flex;align-items:center;gap:6px;}',
+    '.di-desc{font-family:"Instrument Sans",Arial,sans-serif;font-size:11px;color:var(--iph-muted);margin-top:3px;line-height:1.45;}',
+    '.iph-drop-sep{height:1px;background:var(--iph-sep);margin:5px 8px;}',
+
+    /* ── sub-dropdown (Aegis → Sentinel) ── */
+    '.iph-subdrop{display:none;background:var(--iph-sub);border:1px solid var(--iph-sep);',
+    '  border-radius:8px;margin:2px 8px 4px;padding:4px;list-style:none;}',
+    '.iph-drop-item.iph-open>.iph-subdrop{display:block;}',
+    '.iph-subdrop-item{list-style:none;}',
+    '.iph-subdrop-item a{display:flex;flex-direction:column;padding:9px 12px;border-radius:6px;text-decoration:none;transition:background 0.15s;}',
+    '.iph-subdrop-item a:hover{background:var(--iph-hover);}',
+    '.iph-subdrop-item .di-label{font-size:12px;color:var(--iph-gold);}',
+    '.iph-subdrop-item .di-desc{font-size:11px;}',
+
+    /* ── CTA button ── */
+    '#iph-cta{margin-left:auto;flex-shrink:0;display:inline-flex;align-items:center;',
+    '  padding:9px 22px;background:var(--iph-gold);color:#060E1A;',
+    '  font-family:"Instrument Sans",Arial,sans-serif;font-size:11px;font-weight:800;',
+    '  letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;',
+    '  border-radius:6px;transition:opacity 0.2s,transform 0.15s;white-space:nowrap;}',
+    '#iph-cta:hover{opacity:0.85;transform:translateY(-1px);}',
+
+    /* ── burger ── */
+    '#iph-burger{display:none;flex-direction:column;justify-content:center;gap:5px;',
+    '  width:36px;height:36px;cursor:pointer;margin-left:auto;',
+    '  background:none;border:none;padding:4px;}',
+    '#iph-burger span{display:block;height:2px;background:var(--iph-white);border-radius:2px;transition:all 0.25s;}',
+    '#iph-header.iph-mob-open #iph-burger span:nth-child(1){transform:translateY(7px) rotate(45deg);}',
+    '#iph-header.iph-mob-open #iph-burger span:nth-child(2){opacity:0;}',
+    '#iph-header.iph-mob-open #iph-burger span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}',
+
+    /* ── mobile drawer ── */
+    '#iph-mob{display:none;position:fixed;top:var(--iph-h);left:0;right:0;',
+    '  background:var(--iph-drop);border-top:1px solid var(--iph-border);',
+    '  z-index:9997;overflow-y:auto;max-height:calc(100vh - var(--iph-h));padding:12px 0 32px;}',
+    '#iph-header.iph-mob-open~#iph-mob{display:block;}',
+    '.mob-sec{border-bottom:1px solid rgba(197,164,78,0.07);padding:2px 0;}',
+    '.mob-top{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;',
+    '  font-family:"Instrument Sans",Arial,sans-serif;font-size:13px;font-weight:700;',
+    '  letter-spacing:0.08em;text-transform:uppercase;color:var(--iph-white);',
+    '  text-decoration:none;cursor:pointer;}',
+    '.mob-sec.iph-open .mob-top .iph-chev{transform:rotate(180deg);opacity:0.8;}',
+    '.mob-kids{display:none;padding-bottom:6px;}',
+    '.mob-sec.iph-open .mob-kids{display:block;}',
+    '.mob-kid{display:flex;flex-direction:column;padding:10px 24px 10px 36px;text-decoration:none;}',
+    '.mob-kid .di-label{font-size:13px;color:var(--iph-white);}',
+    '.mob-kid .di-desc{font-size:11px;color:var(--iph-muted);margin-top:2px;}',
+    '.mob-sub-head{padding:8px 24px 3px 36px;font-family:"Instrument Sans",Arial,sans-serif;',
+    '  font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;',
+    '  color:var(--iph-gold);opacity:0.55;}',
+    '.mob-sub{display:flex;flex-direction:column;padding:9px 24px 9px 50px;',
+    '  text-decoration:none;background:rgba(0,0,0,0.18);}',
+    '.mob-sub .di-label{font-size:12px;color:var(--iph-gold);}',
+    '.mob-sub .di-desc{font-size:11px;color:var(--iph-muted);margin-top:2px;}',
+    '.mob-cta{display:block;margin:16px 24px 0;padding:14px;',
+    '  background:var(--iph-gold);color:#060E1A;',
+    '  font-family:"Instrument Sans",Arial,sans-serif;font-size:12px;font-weight:800;',
+    '  letter-spacing:0.12em;text-transform:uppercase;text-align:center;text-decoration:none;border-radius:8px;}',
+
+    /* ── responsive breakpoint ── */
+    '@media(max-width:900px){#iph-nav,#iph-cta{display:none!important;}#iph-burger{display:flex;}}',
+    '@media(min-width:901px){#iph-mob{display:none!important;}}'
+  ].join('\n');
+
+  /* ── CHEVRON SVG ────────────────────────────────────────────── */
+  function chev() {
+    var s = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    s.setAttribute('viewBox','0 0 12 12');
+    s.setAttribute('fill','none');
+    s.setAttribute('stroke','currentColor');
+    s.setAttribute('stroke-width','2');
+    s.setAttribute('stroke-linecap','round');
+    s.setAttribute('stroke-linejoin','round');
+    s.className.baseVal = 'iph-chev';
+    var p = document.createElementNS('http://www.w3.org/2000/svg','polyline');
+    p.setAttribute('points','2,4 6,8 10,4');
+    s.appendChild(p);
+    return s;
+  }
+
+  /* ── COMPASS LOGO ───────────────────────────────────────────── */
+  function compassSVG() {
+    var s = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    s.setAttribute('viewBox','0 0 32 32');
+    s.setAttribute('fill','none');
+    s.innerHTML = [
+      '<circle cx="16" cy="16" r="14" stroke="#C5A44E" stroke-width="1.5" opacity="0.3"/>',
+      '<circle cx="16" cy="16" r="10" stroke="#C5A44E" stroke-width="1" opacity="0.2"/>',
+      '<polygon points="16,4 18.5,14 16,12 13.5,14" fill="#C5A44E"/>',
+      '<polygon points="16,28 13.5,18 16,20 18.5,18" fill="rgba(197,164,78,0.4)"/>',
+      '<polygon points="4,16 14,13.5 12,16 14,18.5" fill="rgba(197,164,78,0.4)"/>',
+      '<polygon points="28,16 18,18.5 20,16 18,13.5" fill="rgba(197,164,78,0.4)"/>',
+      '<circle cx="16" cy="16" r="2.5" fill="#C5A44E" opacity="0.9"/>'
+    ].join('');
+    return s;
+  }
+
+  /* ── BUILD DESKTOP DROPDOWN ─────────────────────────────────── */
+  function buildDropList(items) {
+    var ul = document.createElement('ul');
+    ul.className = 'iph-drop';
+
+    items.forEach(function(item, idx) {
+      if (idx > 0) {
+        var sep = document.createElement('li');
+        sep.className = 'iph-drop-sep';
+        ul.appendChild(sep);
       }
-      #iph-nav.open .iph-nav-item{padding:13px 24px;width:100%;}
-      #iph-nav.open .iph-dropdown{width:100%;flex-direction:column;align-items:flex-start;}
-      #iph-nav.open .iph-dropdown-menu{
-        display:none;position:static;box-shadow:none;border:none;
-        border-radius:0;min-width:100%;
-        background:rgba(197,164,78,0.04);
-        border-top:1px solid rgba(197,164,78,0.08);
+
+      var li = document.createElement('li');
+      li.className = 'iph-drop-item';
+
+      var a = document.createElement('a');
+      a.href = item.href || '#';
+
+      var label = document.createElement('span');
+      label.className = 'di-label';
+      label.innerHTML = item.label;
+      if (item.children && item.children.length) label.appendChild(chev());
+      a.appendChild(label);
+
+      if (item.desc) {
+        var desc = document.createElement('span');
+        desc.className = 'di-desc';
+        desc.innerHTML = item.desc;
+        a.appendChild(desc);
       }
-      #iph-nav.open .iph-dropdown.open .iph-dropdown-menu{display:block;}
-      #iph-nav.open .iph-dropdown-menu a{padding:11px 36px;}
-      #iph-cta{margin-left:24px;margin-top:4px;margin-bottom:14px;}
-    }
-  `;
-  var s = document.createElement('style');
-  s.textContent = css;
-  document.head.appendChild(s);
+      li.appendChild(a);
 
-  var html = `
-    <div id="iph-topbar-inner">
-      <div id="iph-brand-group">
-        <a id="iph-wordmark" href="index.html">InPursuit Health</a>
-        <span id="iph-brand-divider">|</span>
-        <a id="iph-maha" href="maha.html">MAHA Policy Alignment</a>
-      </div>
-      <nav id="iph-nav">
+      // Sub-children (Aegis → Sentinel)
+      if (item.children && item.children.length) {
+        var sub = document.createElement('ul');
+        sub.className = 'iph-subdrop';
+        item.children.forEach(function(sc) {
+          var sli = document.createElement('li');
+          sli.className = 'iph-subdrop-item';
+          var sa = document.createElement('a');
+          sa.href = sc.href || '#';
+          var sl = document.createElement('span');
+          sl.className = 'di-label';
+          sl.innerHTML = sc.label;
+          sa.appendChild(sl);
+          if (sc.desc) {
+            var sd = document.createElement('span');
+            sd.className = 'di-desc';
+            sd.innerHTML = sc.desc;
+            sa.appendChild(sd);
+          }
+          sli.appendChild(sa);
+          sub.appendChild(sli);
+        });
+        li.appendChild(sub);
 
-        <div class="iph-dropdown">
-          <a href="tetra.html" class="iph-nav-item iph-dropdown-toggle">TETRA <span class="iph-caret">▼</span></a>
-          <div class="iph-dropdown-menu">
-            <a href="tetra-ex.html">TETRA <em>ex</em>™</a>
-            <a href="tetra-aegis.html">TETRA Aegis™</a>
-          </div>
-        </div>
+        a.addEventListener('click', function(e) {
+          e.preventDefault();
+          li.classList.toggle('iph-open');
+        });
+      }
 
-        <div class="iph-dropdown">
-          <a href="for-you.html" class="iph-nav-item iph-dropdown-toggle">For You <span class="iph-caret">▼</span></a>
-          <div class="iph-dropdown-menu">
-            
-            
-          </div>
-        </div>
+      ul.appendChild(li);
+    });
+    return ul;
+  }
 
-        <div class="iph-dropdown">
-          <a href="for-providers.html" class="iph-nav-item iph-dropdown-toggle">For VBC Providers <span class="iph-caret">▼</span></a>
-          <div class="iph-dropdown-menu">
-            <a href="access.html">CMS ACCESS — Apply Now</a>
-          </div>
-        </div>
+  /* ── BUILD DESKTOP NAV ──────────────────────────────────────── */
+  function buildNav() {
+    var ul = document.createElement('ul');
+    ul.id = 'iph-nav';
 
-        <a href="data-oath.html" class="iph-nav-item">Data Oath</a>
-        <a href="veterans.html" class="iph-nav-item">Veterans First</a>
-        <a id="iph-cta" href="investors.html">Invest</a>
+    NAV.forEach(function(item) {
+      var li = document.createElement('li');
+      li.className = 'iph-ni';
 
-      </nav>
-      <button id="iph-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
-    </div>
-  `;
+      var a = document.createElement('a');
+      a.href = item.href || '#';
+      a.innerHTML = item.label;
+      if (item.children) a.appendChild(chev());
+      li.appendChild(a);
 
-  var bar = document.createElement('header');
-  bar.id = 'iph-topbar';
-  bar.innerHTML = html;
-  document.querySelectorAll('header#iph-topbar,header.top-bar,header#topBar,.nav,nav.nav').forEach(function(el){el.remove();});
-  document.body.insertBefore(bar, document.body.firstChild);
+      if (item.children) {
+        li.appendChild(buildDropList(item.children));
+        a.addEventListener('click', function(e) {
+          e.preventDefault();
+          var wasOpen = li.classList.contains('iph-open');
+          document.querySelectorAll('.iph-ni.iph-open').forEach(function(el){ el.classList.remove('iph-open'); });
+          if (!wasOpen) li.classList.add('iph-open');
+        });
+      }
 
-  window.addEventListener('scroll', function(){bar.classList.toggle('scrolled',window.scrollY>10);});
+      ul.appendChild(li);
+    });
+    return ul;
+  }
 
-  document.getElementById('iph-toggle').addEventListener('click', function(){
-    document.getElementById('iph-nav').classList.toggle('open');
-  });
+  /* ── BUILD MOBILE MENU ──────────────────────────────────────── */
+  function buildMobile() {
+    var wrap = document.createElement('div');
+    wrap.id = 'iph-mob';
 
-  document.querySelectorAll('.iph-dropdown-toggle').forEach(function(t){
-    t.addEventListener('click', function(e){
-      if(window.innerWidth<=1000){
-        e.preventDefault();
-        var p=this.closest('.iph-dropdown');
-        var was=p.classList.contains('open');
-        document.querySelectorAll('.iph-dropdown').forEach(function(d){d.classList.remove('open');});
-        if(!was) p.classList.add('open');
+    NAV.forEach(function(item) {
+      var sec = document.createElement('div');
+      sec.className = 'mob-sec';
+
+      if (item.children) {
+        var topDiv = document.createElement('div');
+        topDiv.className = 'mob-top';
+        var topSpan = document.createElement('span');
+        topSpan.innerHTML = item.label;
+        topDiv.appendChild(topSpan);
+        topDiv.appendChild(chev());
+        topDiv.addEventListener('click', function(){ sec.classList.toggle('iph-open'); });
+        sec.appendChild(topDiv);
+
+        var kids = document.createElement('div');
+        kids.className = 'mob-kids';
+
+        item.children.forEach(function(child) {
+          var a = document.createElement('a');
+          a.href = child.href || '#';
+          a.className = 'mob-kid';
+          var l = document.createElement('span');
+          l.className = 'di-label';
+          l.innerHTML = child.label;
+          a.appendChild(l);
+          if (child.desc) {
+            var d = document.createElement('span');
+            d.className = 'di-desc';
+            d.innerHTML = child.desc;
+            a.appendChild(d);
+          }
+          kids.appendChild(a);
+
+          // Nested subs
+          if (child.children && child.children.length) {
+            var sh = document.createElement('div');
+            sh.className = 'mob-sub-head';
+            sh.textContent = 'Includes';
+            kids.appendChild(sh);
+            child.children.forEach(function(sub) {
+              var sa = document.createElement('a');
+              sa.href = sub.href || '#';
+              sa.className = 'mob-sub';
+              var sl = document.createElement('span');
+              sl.className = 'di-label';
+              sl.innerHTML = sub.label;
+              sa.appendChild(sl);
+              if (sub.desc) {
+                var sd = document.createElement('span');
+                sd.className = 'di-desc';
+                sd.innerHTML = sub.desc;
+                sa.appendChild(sd);
+              }
+              kids.appendChild(sa);
+            });
+          }
+        });
+
+        sec.appendChild(kids);
+      } else {
+        var a = document.createElement('a');
+        a.href = item.href;
+        a.className = 'mob-top';
+        a.innerHTML = item.label;
+        sec.appendChild(a);
+      }
+      wrap.appendChild(sec);
+    });
+
+    var cta = document.createElement('a');
+    cta.href = CTA.href;
+    cta.className = 'mob-cta';
+    cta.textContent = CTA.label;
+    wrap.appendChild(cta);
+
+    return wrap;
+  }
+
+  /* ── INJECT ─────────────────────────────────────────────────── */
+  function inject() {
+    // Styles
+    var style = document.createElement('style');
+    style.textContent = CSS;
+    document.head.appendChild(style);
+
+    // Header
+    var header = document.createElement('header');
+    header.id = 'iph-header';
+
+    // Logo
+    var logo = document.createElement('a');
+    logo.id = 'iph-logo';
+    logo.href = 'index.html';
+    logo.appendChild(compassSVG());
+    var wm = document.createElement('div');
+    wm.className = 'iph-lw';
+    wm.innerHTML = '<span class="iph-lw-main">InPursuit</span><span class="iph-lw-sub">Health</span>';
+    logo.appendChild(wm);
+    header.appendChild(logo);
+
+    // Desktop nav
+    header.appendChild(buildNav());
+
+    // CTA
+    var ctaEl = document.createElement('a');
+    ctaEl.id = 'iph-cta';
+    ctaEl.href = CTA.href;
+    ctaEl.textContent = CTA.label;
+    header.appendChild(ctaEl);
+
+    // Burger
+    var burger = document.createElement('button');
+    burger.id = 'iph-burger';
+    burger.setAttribute('aria-label','Menu');
+    burger.innerHTML = '<span></span><span></span><span></span>';
+    burger.addEventListener('click', function(){ header.classList.toggle('iph-mob-open'); });
+    header.appendChild(burger);
+
+    // Mobile menu
+    var mob = buildMobile();
+
+    // Insert
+    document.body.insertBefore(mob, document.body.firstChild);
+    document.body.insertBefore(header, document.body.firstChild);
+
+    // Close dropdowns on outside click
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest || !e.target.closest('.iph-ni')) {
+        document.querySelectorAll('.iph-ni.iph-open').forEach(function(el){ el.classList.remove('iph-open'); });
       }
     });
-  });
 
-  var page=window.location.pathname.split('/').pop()||'index.html';
-  document.querySelectorAll('.iph-nav-item,.iph-dropdown-menu a').forEach(function(a){
-    if(a.getAttribute('href')===page) a.style.color='var(--gold)';
-  });
+    // Active page highlight
+    var page = (window.location.pathname.split('/').pop()) || 'index.html';
+    document.querySelectorAll('#iph-nav .iph-ni>a').forEach(function(a) {
+      if (a.getAttribute('href') === page) a.closest('.iph-ni').classList.add('iph-active');
+    });
+  }
 
-  // ── UNIVERSAL FOOTER ──
-  var fcss = `
-    #iph-footer {
-      background: #060E1A;
-      border-top: 1px solid rgba(197,164,78,0.12);
-      padding: 56px 40px 32px;
-      font-family: 'Instrument Sans','DM Sans',sans-serif;
-    }
-    #iph-footer-inner { max-width:1200px; margin:0 auto; }
-    #iph-footer-top {
-      display:flex; justify-content:space-between; align-items:flex-start;
-      flex-wrap:wrap; gap:48px;
-      padding-bottom:40px; border-bottom:1px solid rgba(197,164,78,0.08);
-    }
-    #iph-footer-brand-col .iph-footer-wordmark {
-      font-family:'Instrument Serif',Georgia,serif; font-size:20px;
-      color:#C5A44E; letter-spacing:1px; display:block;
-      margin-bottom:8px; text-decoration:none;
-    }
-    #iph-footer-brand-col .iph-footer-tagline {
-      font-size:10px; letter-spacing:2px; text-transform:uppercase;
-      color:rgba(255,255,255,0.25);
-    }
-    #iph-footer-brand-col .iph-footer-contact {
-      display:block; margin-top:16px; font-size:11px; letter-spacing:0.5px;
-      color:rgba(197,164,78,0.55); text-decoration:none; transition:color 0.3s;
-    }
-    #iph-footer-brand-col .iph-footer-contact:hover { color:#C5A44E; }
-    .iph-footer-col-label {
-      font-size:9px; font-weight:700; letter-spacing:2px; text-transform:uppercase;
-      color:rgba(197,164,78,0.45); margin-bottom:16px;
-    }
-    .iph-footer-links { display:flex; flex-direction:column; gap:10px; }
-    .iph-footer-links a {
-      font-size:11px; letter-spacing:1px; text-transform:uppercase;
-      color:rgba(255,255,255,0.35); text-decoration:none; transition:color 0.3s;
-    }
-    .iph-footer-links a:hover { color:#C5A44E; }
-    #iph-footer-bottom {
-      display:flex; justify-content:space-between; align-items:center;
-      flex-wrap:wrap; gap:12px; padding-top:28px;
-    }
-    #iph-footer-legal { font-size:10px; color:rgba(255,255,255,0.2); letter-spacing:0.5px; line-height:1.6; }
-    #iph-footer-marks { font-size:10px; color:rgba(255,255,255,0.15); letter-spacing:0.5px; }
-    @media(max-width:768px){ #iph-footer{padding:40px 20px 24px;} #iph-footer-top{gap:32px;} }
-  `;
-  var fs = document.createElement('style');
-  fs.textContent = fcss;
-  document.head.appendChild(fs);
-
-  var fhtml = `
-    <div id="iph-footer-inner">
-      <div id="iph-footer-top">
-        <div id="iph-footer-brand-col">
-          <a class="iph-footer-wordmark" href="index.html">InPursuit Health</a>
-          <span class="iph-footer-tagline">Harness the Power of Your Data\u2122</span>
-          <a class="iph-footer-contact" href="mailto:info@inpursuithealth.com">info@inpursuithealth.com</a>
-        </div>
-        <div>
-          <div class="iph-footer-col-label">Policy</div>
-          <div class="iph-footer-links">
-            <a href="terms.html">Terms of Service</a>
-            <a href="security.html">Security Center</a>
-          </div>
-        </div>
-        <div>
-          <div class="iph-footer-col-label">Company</div>
-          <div class="iph-footer-links">
-            <a href="index.html">Home</a>
-            <a href="about.html">About Us</a>
-            <a href="leadership.html">Leadership</a>
-            <a href="careers.html">Careers</a>
-            <a href="mailto:info@inpursuithealth.com">Contact</a>
-          </div>
-        </div>
-      </div>
-      <div id="iph-footer-bottom">
-        <div id="iph-footer-legal">&copy; 2026 InPursuit Health, LLC &mdash; Wyoming Limited Liability Company. All rights reserved. Patent pending.</div>
-        <div id="iph-footer-marks">Results Matter\u2122 &nbsp;|&nbsp; Harness the Power of Your Data\u2122</div>
-      </div>
-    </div>
-  `;
-
-  document.querySelectorAll('footer').forEach(function(el){ el.remove(); });
-  var footer = document.createElement('footer');
-  footer.id = 'iph-footer';
-  footer.innerHTML = fhtml;
-  document.body.appendChild(footer);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', inject);
+  } else {
+    inject();
+  }
 
 })();
