@@ -9,6 +9,10 @@
   /* ── NAV DATA ─────────────────────────────────────────────────── */
   var NAV = [
     {
+      label: 'MAHA',
+      href:  'maha.html'
+    },
+    {
       label: 'TETRA',
       href:  'tetra.html',
       children: [
@@ -37,45 +41,26 @@
       ]
     },
     {
+      label: 'For You',
+      href:  'for-you.html'
+    },
+    {
       label: 'For Providers',
       href:  'for-providers.html',
       children: [
-        { label: 'CMS ACCESS Model',    href: 'access.html',          desc: 'Apply by April\u00a01, 2026\u00a0\u2014 Cohort\u00a01' },
-        { label: 'Value-Based Care',    href: 'value-based-care.html',desc: 'Revenue transition without the risk' },
-        { label: 'Provider Onboarding', href: 'onboarding.html',      desc: 'Start in under 30 minutes' }
+        { label: 'CMS ACCESS Offer', href: 'access.html',    desc: 'Apply by April\u00a01, 2026\u00a0\u2014 Cohort\u00a01' },
+        { label: 'MSSP',             href: 'mssp.html',       desc: 'Medicare Shared Savings Program' },
+        { label: 'LEAD',             href: 'lead.html',       desc: 'Lung Cancer Early Detection' },
+        { label: 'TEAM',             href: 'team.html',       desc: 'Transforming Episode Accountability Model' }
       ]
     },
     {
-      label: 'For Payers',
-      href:  'for-payers.html',
-      children: [
-        { label: 'CMS ACCESS Model Offer', href: 'payers-access.html',  desc: 'Value-based care infrastructure for payer networks' },
-        { label: 'MSSP',                   href: 'mssp.html',            desc: 'Medicare Shared Savings Program participation' },
-        { label: 'LEAD',                   href: 'lead.html',            desc: 'Lung Cancer Early Detection program support' },
-        { label: 'TEAM',                   href: 'team.html',            desc: 'Transforming Episode Accountability Model' }
-      ]
-    },
-    {
-      label: 'For Patients',
-      href:  'for-patients.html',
-      children: [
-        { label: 'InPursuit App',   href: 'app.html',            desc: 'Your unified health record' },
-        { label: 'MAHA Initiative', href: 'maha.html',           desc: 'Making America Healthy Again' },
-        { label: 'Veterans First',  href: 'veterans-first.html', desc: 'Bridging DoD \u2192 VA care gaps' }
-      ]
-    },
-    {
-      label: 'About',
-      href:  '#',
-      children: [
-        { label: 'Leadership',  href: 'leadership.html', desc: 'The team behind InPursuit' },
-        { label: 'Our Mission', href: 'about.html',      desc: 'Why we exist' },
-        { label: 'Contact',     href: 'contact.html',    desc: 'Get in touch' }
-      ]
+      label: 'Veterans First',
+      href:  'veterans-first.html'
     }
   ];
 
-  var CTA = { label: 'Get Started', href: 'access.html' };
+  var CTA = { label: 'Invest Now', href: 'invest.html', highlight: true };
 
   /* ── CSS ──────────────────────────────────────────────────────── */
   var CSS = [
@@ -158,9 +143,51 @@
     '#iph-cta{margin-left:auto;flex-shrink:0;display:inline-flex;align-items:center;',
     '  padding:9px 22px;background:var(--iph-gold);color:#060E1A;',
     '  font-family:"Instrument Sans",Arial,sans-serif;font-size:11px;font-weight:800;',
-    '  letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;',
-    '  border-radius:6px;transition:opacity 0.2s,transform 0.15s;white-space:nowrap;}',
-    '#iph-cta:hover{opacity:0.85;transform:translateY(-1px);}',
+    '  letter-spacing:0.14em;text-transform:uppercase;text-decoration:none;',
+    '  border-radius:6px;transition:transform 0.15s;',
+    '  white-space:nowrap;position:relative;overflow:hidden;',
+    '  animation:iphInvestPulse 3.5s ease-in-out infinite;}',
+
+    /* shimmer sweep */
+    '#iph-cta::before{',
+    '  content:"";position:absolute;top:0;left:-100%;width:60%;height:100%;',
+    '  background:linear-gradient(105deg,transparent 20%,rgba(255,255,255,0.28) 50%,transparent 80%);',
+    '  animation:iphInvestShimmer 3.5s ease-in-out infinite;',
+    '  pointer-events:none;}',
+
+    '#iph-cta:hover{transform:translateY(-1px);animation-play-state:paused;}',
+    '#iph-cta:hover::before{animation-play-state:paused;}',
+
+    '@keyframes iphInvestPulse{',
+    '  0%,100%{',
+    '    background:var(--iph-gold);',
+    '    box-shadow:0 0 0 0 rgba(197,164,78,0),0 0 0 0 rgba(197,164,78,0);',
+    '  }',
+    '  40%{',
+    '    background:#d4b05a;',
+    '    box-shadow:0 0 12px 2px rgba(197,164,78,0.45),0 0 28px 6px rgba(197,164,78,0.18);',
+    '  }',
+    '  70%{',
+    '    background:var(--iph-gold);',
+    '    box-shadow:0 0 6px 1px rgba(197,164,78,0.2),0 0 0 0 rgba(197,164,78,0);',
+    '  }',
+    '}',
+
+    '@keyframes iphInvestShimmer{',
+    '  0%,30%{left:-100%;}',
+    '  55%{left:140%;}',
+    '  100%{left:140%;}',
+    '}',
+
+    /* any .btn-invest on any page gets the same treatment */
+    '.btn-invest{position:relative;overflow:hidden;',
+    '  animation:iphInvestPulse 3.5s ease-in-out infinite;}',
+    '.btn-invest::before{',
+    '  content:"";position:absolute;top:0;left:-100%;width:60%;height:100%;',
+    '  background:linear-gradient(105deg,transparent 20%,rgba(255,255,255,0.28) 50%,transparent 80%);',
+    '  animation:iphInvestShimmer 3.5s ease-in-out infinite;pointer-events:none;}',
+    '.btn-invest:hover{animation-play-state:paused;}',
+    '.btn-invest:hover::before{animation-play-state:paused;}',
 
     /* ── burger ── */
     '#iph-burger{display:none;flex-direction:column;justify-content:center;gap:5px;',
