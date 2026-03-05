@@ -127,9 +127,74 @@ body {
 .nav-toggle span:nth-child(3) { bottom: 0; }
 
 /* ===== HERO ===== */
+/* ===== BREAKING NEWS TICKER ===== */
+.news-ticker {
+  position: fixed; top: 64px; left: 0; right: 0;
+  z-index: 999; height: 40px;
+  background: #0C0C0C;
+  border-bottom: 1px solid rgba(178,34,52,0.3);
+  display: flex; align-items: center; overflow: hidden;
+}
+.ticker-label {
+  flex-shrink: 0; display: flex; align-items: center; gap: 7px;
+  background: var(--red); color: white;
+  font-size: 9px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
+  padding: 0 16px; height: 100%; z-index: 2;
+  border-right: 2px solid rgba(178,34,52,0.6);
+}
+.ticker-label::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: white; animation: tickerDot 1.4s ease-in-out infinite;
+}
+@keyframes tickerDot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.ticker-track-wrap {
+  flex: 1; overflow: hidden; position: relative; height: 100%;
+  mask-image: linear-gradient(90deg, transparent 0%, black 3%, black 97%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 3%, black 97%, transparent 100%);
+}
+.ticker-scroll {
+  display: flex; align-items: center; height: 100%;
+  animation: tickerScroll 120s linear infinite;
+  width: max-content;
+}
+.ticker-scroll:hover { animation-play-state: paused; }
+@keyframes tickerScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.ticker-headline {
+  display: inline-flex; align-items: center; gap: 8px;
+  white-space: nowrap; padding: 0 32px;
+  font-size: 12px; color: rgba(255,255,255,0.55);
+  letter-spacing: 0.3px; cursor: default;
+  transition: color 0.2s;
+}
+.ticker-headline:hover { color: rgba(255,255,255,0.9); }
+a.ticker-headline { text-decoration: none; }
+.ticker-headline .co {
+  font-size: 9px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase;
+  padding: 2px 7px; border-radius: 2px; margin-right: 2px;
+}
+.co-google { background: rgba(66,133,244,0.15); color: #8AB4F8; }
+.co-openai { background: rgba(16,163,127,0.15); color: #5CDBAB; }
+.co-anthropic { background: rgba(204,169,114,0.15); color: #D4B87A; }
+.co-meta { background: rgba(0,128,255,0.15); color: #66B3FF; }
+.co-ftc { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.45); }
+.co-amazon { background: rgba(255,153,0,0.15); color: #FFB347; }
+.co-microsoft { background: rgba(0,120,215,0.15); color: #5EB3F5; }
+.co-apple { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.7); }
+.co-betterhelp { background: rgba(38,166,154,0.15); color: #4DB6AC; }
+.co-goodrx { background: rgba(255,214,0,0.15); color: #FFE066; }
+.co-flo { background: rgba(255,105,135,0.15); color: #FF8A9E; }
+.co-premom { background: rgba(156,39,176,0.15); color: #CE93D8; }
+.ticker-sep { color: rgba(178,34,52,0.5); font-size: 8px; }
+
 .page-hero {
   background: var(--navy-deep);
-  padding: 160px 40px 100px;
+  padding: 200px 40px 100px;
   position: relative;
   overflow: hidden;
   text-align: center;
@@ -702,7 +767,10 @@ body {
     padding: 16px 0;
   }
   .top-bar-nav.open .nav-item { padding: 14px 24px; }
-  .page-hero { padding: 140px 20px 80px; }
+  .page-hero { padding: 180px 20px 80px; }
+  .news-ticker { top: 64px; height: 36px; }
+  .ticker-label { font-size: 8px; padding: 0 10px; }
+  .ticker-headline { font-size: 11px; padding: 0 20px; }
   .section { padding: 60px 20px; }
   .section-dark { padding: 60px 20px; }
   .pledge-grid { grid-template-columns: 1fr; }
@@ -732,6 +800,41 @@ body {
   
   </div>
 </header>
+
+<!-- ===== BREAKING NEWS TICKER ===== -->
+<div class="news-ticker" id="newsTicker">
+  <div class="ticker-label">Warning!</div>
+  <div class="ticker-track-wrap">
+    <div class="ticker-scroll">
+      <a class="ticker-headline" href="https://www.techradar.com/ai-platforms-assistants/anthropic-drops-its-signature-safety-promise-and-rewrites-ai-guardrails" target="_blank"><span class="co co-anthropic">Anthropic</span> Drops signature AI safety promise &mdash; will no longer guarantee safety mitigations before releasing frontier models <span class="ticker-sep">&bull;</span></a>
+      <a class="ticker-headline" href="https://theconversation.com/openai-has-deleted-the-word-safely-from-its-mission-and-its-new-structure-is-a-test-for-whether-ai-serves-society-or-shareholders-274467" target="_blank"><span class="co co-openai">OpenAI</span> Deletes the word &ldquo;safely&rdquo; from mission statement after $500B for-profit conversion <span class="ticker-sep">&bull;</span></a>
+      <a class="ticker-headline" href="https://natlawreview.com/article/silent-switch-new-lawsuit-alleges-google-uses-gemini-ai-secretly-read-gmail-chat" target="_blank"><span class="co co-google">Google</span> Secretly enables Gemini AI for 1.8B Gmail accounts &mdash; scanning emails by default. Class-action lawsuit filed. <span class="ticker-sep">&bull;</span></a>
+      <a class="ticker-headline" href="https://www.lexology.com/library/detail.aspx?g=619e126a-e78e-475d-97d9-d6067f1505b6" target="_blank"><span class="co co-anthropic">Anthropic</span> Reverses &ldquo;we don&rsquo;t train on conversations&rdquo; policy &mdash; retention jumps 30 days to 5 years <span class="ticker-sep">&bull;</span></a>
+      <a class="ticker-headline" href="https://topclassactions.com/lawsuit-settlements/privacy/amazon-alexa-class-action-alleging-privacy-violations-moves-forward/" target="_blank"><span class="co co-amazon">Amazon</span> Alexa recorded billions of private conversations &mdash; nationwide class-action certified, children&rsquo;s data kept indefinitely <span class="ticker-sep">&bull;</span></a>
+      <a class="ticker-headline" href="https://doublepulsar.com/microsoft-recall-on-copilot-pc-testing-the-security-and-privacy-implications-ddb296093b6c" target="_blank"><span class="co co-microsoft">Microsoft</span> Recall screenshots your PC every 5 seconds &mdash; initial version stored passwords and financial data in plain text <span class="ticker-sep">&bull;</span></a>
+      <a class="ticker-headline" href="https://www.npr.org/2025/01/03/g-s1-40940/apple-settle-lawsuit-siri-privacy" target="_blank"><span class="co co-apple">Apple</span> Pays $95M to settle Siri lawsuit &mdash; recorded private conversations without consent and shared audio with advertisers <span class="ticker-sep">&bull;</span></a>
+      <a class="ticker-headline" href="https://www.aljazeera.com/news/2025/11/24/are-tech-companies-using-your-private-data-to-train-ai-models" target="_blank"><span class="co co-meta">Meta</span> DM data used for AI training &mdash; no way to fully opt out across Instagram, Facebook, Threads <span class="ticker-sep">&bull;</span></a>
+      <a class="ticker-headline" href="https://www.ftc.gov/policy/advocacy-research/tech-at-ftc/2024/01/ai-companies-uphold-your-privacy-confidentiality-commitments" target="_blank"><span class="co co-ftc">FTC</span> Warns: retroactively changing privacy policies to train on user data may violate federal law <span class="ticker-sep">&bull;</span></a>
+      <a class="ticker-headline" href="https://www.thedrum.com/opinion/2024/05/03/what-apps-do-with-your-health-data-when-youre-not-looking" target="_blank"><span class="co co-betterhelp">BetterHelp</span> Shared 7M users&rsquo; mental health data with Facebook and Snapchat for ad targeting &mdash; FTC fined $7.8M <span class="ticker-sep">&bull;</span></a>
+      <a class="ticker-headline" href="https://www.cpomagazine.com/data-privacy/goodrx-fined-for-sharing-data-health-data-provided-to-facebook-google-other-third-party-firms-for-advertising/" target="_blank"><span class="co co-goodrx">GoodRx</span> Fined by FTC for sharing prescription data with 20 marketing firms including Facebook and Google <span class="ticker-sep">&bull;</span></a>
+      <a class="ticker-headline" href="https://www.thedrum.com/opinion/2024/05/03/what-apps-do-with-your-health-data-when-youre-not-looking" target="_blank"><span class="co co-flo">Flo</span> Period-tracking app caught selling pregnancy and fertility data to third-party advertisers <span class="ticker-sep">&bull;</span></a>
+      <a class="ticker-headline" href="https://www.thedrum.com/opinion/2024/05/03/what-apps-do-with-your-health-data-when-youre-not-looking" target="_blank"><span class="co co-premom">Premom</span> Fertility app secretly shared sensitive reproductive data with advertisers &mdash; FTC enforcement action <span class="ticker-sep">&bull;</span></a>
+      <!-- Duplicate for seamless loop -->
+      <a class="ticker-headline" href="https://www.techradar.com/ai-platforms-assistants/anthropic-drops-its-signature-safety-promise-and-rewrites-ai-guardrails" target="_blank"><span class="co co-anthropic">Anthropic</span> Drops signature AI safety promise &mdash; will no longer guarantee safety mitigations before releasing frontier models <span class="ticker-sep">&bull;</span></a>
+      <a class="ticker-headline" href="https://theconversation.com/openai-has-deleted-the-word-safely-from-its-mission-and-its-new-structure-is-a-test-for-whether-ai-serves-society-or-shareholders-274467" target="_blank"><span class="co co-openai">OpenAI</span> Deletes the word &ldquo;safely&rdquo; from mission statement after $500B for-profit conversion <span class="ticker-sep">&bull;</span></a>
+      <a class="ticker-headline" href="https://natlawreview.com/article/silent-switch-new-lawsuit-alleges-google-uses-gemini-ai-secretly-read-gmail-chat" target="_blank"><span class="co co-google">Google</span> Secretly enables Gemini AI for 1.8B Gmail accounts &mdash; scanning emails by default. Class-action lawsuit filed. <span class="ticker-sep">&bull;</span></a>
+      <a class="ticker-headline" href="https://topclassactions.com/lawsuit-settlements/privacy/amazon-alexa-class-action-alleging-privacy-violations-moves-forward/" target="_blank"><span class="co co-amazon">Amazon</span> Alexa recorded billions of private conversations &mdash; nationwide class-action certified, children&rsquo;s data kept indefinitely <span class="ticker-sep">&bull;</span></a>
+      <a class="ticker-headline" href="https://doublepulsar.com/microsoft-recall-on-copilot-pc-testing-the-security-and-privacy-implications-ddb296093b6c" target="_blank"><span class="co co-microsoft">Microsoft</span> Recall screenshots your PC every 5 seconds &mdash; initial version stored passwords and financial data in plain text <span class="ticker-sep">&bull;</span></a>
+      <a class="ticker-headline" href="https://www.npr.org/2025/01/03/g-s1-40940/apple-settle-lawsuit-siri-privacy" target="_blank"><span class="co co-apple">Apple</span> Pays $95M to settle Siri lawsuit &mdash; recorded private conversations without consent and shared audio with advertisers <span class="ticker-sep">&bull;</span></a>
+      <a class="ticker-headline" href="https://www.aljazeera.com/news/2025/11/24/are-tech-companies-using-your-private-data-to-train-ai-models" target="_blank"><span class="co co-meta">Meta</span> DM data used for AI training &mdash; no way to fully opt out across Instagram, Facebook, Threads <span class="ticker-sep">&bull;</span></a>
+      <a class="ticker-headline" href="https://www.ftc.gov/policy/advocacy-research/tech-at-ftc/2024/01/ai-companies-uphold-your-privacy-confidentiality-commitments" target="_blank"><span class="co co-ftc">FTC</span> Warns: retroactively changing privacy policies to train on user data may violate federal law <span class="ticker-sep">&bull;</span></a>
+      <a class="ticker-headline" href="https://www.thedrum.com/opinion/2024/05/03/what-apps-do-with-your-health-data-when-youre-not-looking" target="_blank"><span class="co co-betterhelp">BetterHelp</span> Shared 7M users&rsquo; mental health data with Facebook and Snapchat for ad targeting &mdash; FTC fined $7.8M <span class="ticker-sep">&bull;</span></a>
+      <a class="ticker-headline" href="https://www.cpomagazine.com/data-privacy/goodrx-fined-for-sharing-data-health-data-provided-to-facebook-google-other-third-party-firms-for-advertising/" target="_blank"><span class="co co-goodrx">GoodRx</span> Fined by FTC for sharing prescription data with 20 marketing firms including Facebook and Google <span class="ticker-sep">&bull;</span></a>
+      <a class="ticker-headline" href="https://www.thedrum.com/opinion/2024/05/03/what-apps-do-with-your-health-data-when-youre-not-looking" target="_blank"><span class="co co-flo">Flo</span> Period-tracking app caught selling pregnancy and fertility data to third-party advertisers <span class="ticker-sep">&bull;</span></a>
+      <a class="ticker-headline" href="https://www.thedrum.com/opinion/2024/05/03/what-apps-do-with-your-health-data-when-youre-not-looking" target="_blank"><span class="co co-premom">Premom</span> Fertility app secretly shared sensitive reproductive data with advertisers &mdash; FTC enforcement action <span class="ticker-sep">&bull;</span></a>
+    </div>
+  </div>
+</div>
 
 <!-- ===== HERO ===== -->
 <section class="page-hero">
